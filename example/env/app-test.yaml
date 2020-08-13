@@ -1,0 +1,4 @@
+name: test
+baseUrl: /api-test
+logger:
+  enable: true

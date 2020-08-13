@@ -1,0 +1,18 @@
+name: flutter_env_creator
+description: Automatically generates dart code from your yaml file.
+version: 0.1.0
+repository: https://github.com/alex-80/flutter_env_creator
+
+environment:
+  sdk: '>=2.8.1 <3.0.0'
+
+dependencies:
+  args: ^1.6.0
+  yaml: ^2.2.1
+  path: ^1.7.0
+  merge_map: ^1.0.2
+  mustache: ^1.1.1
+
+dev_dependencies:
+  pedantic: ^1.9.0
+  test: ^1.14.4

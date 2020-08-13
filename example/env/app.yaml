@@ -1,0 +1,4 @@
+baseUrl: /api
+logger:
+  enable: false
+timeout: 5000
