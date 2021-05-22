@@ -7,7 +7,6 @@ import 'package:path/path.dart' as path;
 import 'package:merge_map/merge_map.dart';
 
 const String _dartTpl = '''
-/// auto generate
 class Env {
   {{# fields }}
     static final {{ key }} = {{ val }};
@@ -150,38 +149,12 @@ YamlMap _getYamlConfig(String yamlPath) {
   return doc as YamlMap;
 }
 
-/// Get config from pubspec.yaml
-Config _getConfig() {
-  final pwd = Platform.environment['PWD'];
-  final filePath = path.join(pwd, 'pubspec.yaml');
-  final file = File(filePath);
-  final yamlMap = loadYaml(file.readAsStringSync());
-  final defalutConfig = Config.defaluts();
+String generateEnv(Config config) {
+  final propertyPath = path.join('android', '${config.envPrefix}.properties');
 
-  if (yamlMap == null || !(yamlMap['flutter_env_creator'] is Map)) {
-    stdout.writeln(
-        'Your `$filePath` file does not contain a `flutter_env_creator` section, use defalut instead');
-    return defalutConfig;
-  }
-
-  final config = yamlMap['flutter_env_creator'];
-
-  return Config(
-      pwd: pwd,
-      prefix: config['prefix'] ?? defalutConfig.prefix,
-      outputDir: config['outputDir'] ?? defalutConfig.outputDir,
-      inputDir: config['inputDir'] ?? defalutConfig.inputDir);
-}
-
-void create(String target) {
-  final config = _getConfig();
-
-  final dartPath = path.join(config.outputDir, '${config.prefix}.dart');
-  final propertyPath =
-      path.join(config.pwd, 'android', '${config.prefix}.properties');
-
-  final baseYamlPath = path.join(config.inputDir, '${config.prefix}.yaml');
-  final yamlPath = path.join(config.inputDir, '${config.prefix}-$target.yaml');
+  final baseYamlPath = path.join(config.envDir, '${config.envPrefix}.yaml');
+  final yamlPath =
+      path.join(config.envDir, '${config.envPrefix}-${config.env}.yaml');
 
   final configs = [_getYamlConfig(baseYamlPath).value];
 
@@ -190,21 +163,17 @@ void create(String target) {
   }
 
   final merged = mergeMap(configs, acceptNull: true);
-  final dartOutput = genDartSource(merged, config.prefix.toFirstUpperCase());
+  final dartOutput = genDartSource(merged, config.envPrefix.toFirstUpperCase());
 
   final propertyOutput = genPropertySource(merged);
 
-  final dartOutDir = path.dirname(dartPath);
   final propertyOutputDir = path.dirname(propertyPath);
-
-  if (!Directory(dartOutDir).existsSync()) {
-    Directory(dartOutDir).createSync(recursive: true);
-  }
 
   if (!Directory(propertyOutputDir).existsSync()) {
     Directory(propertyOutputDir).createSync(recursive: true);
   }
 
-  File(dartPath).writeAsString(dartOutput);
   File(propertyPath).writeAsString(propertyOutput);
+
+  return dartOutput;
 }

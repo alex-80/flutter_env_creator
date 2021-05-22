@@ -8,20 +8,20 @@ Automatically generates dart code from your `yaml` file.
 
 ```yaml
 dev_dependencies:
-  flutter_env_creator: ^0.1.0
+  flutter_env_creator: ^1.1.0
 ```
 
 ```bash
 flutter pub get
 ```
 
-- Add your settings to your project's pubspec.yaml file
+- Add @GenEnv annotation to your project's lib/main.dart file
 
-```yaml
-flutter_env_creator:
-  prefix: app
-  inputDir: env
-  outputDir: lib
+```dart
+import 'package:flutter_env_creator/annotation.dart';
+
+@GenEnv(prefix: 'app', envDir: 'env')
+void main() {}
 ```
 
 - create your yaml file
@@ -58,15 +58,14 @@ baseUrl: /api-dev
 - Run the package:
 
 ```bash
-pub run flutter_env_creator:create -t test
+APP_ENV=dev flutter pub run build_runner build
 ```
 
 ## Result
-It will genreate app.dart file and app.properties file
+It will genreate main.env.dart file and app.properties file
 
 lib/app.dart
 ```dart
-/// auto generate
 class Env {
     static final baseUrl = '/api-test';
     static final logger = AppLogger();

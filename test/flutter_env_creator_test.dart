@@ -52,7 +52,6 @@ void main() {
       expect(
           result.trim(),
           equals('''
-/// auto generate
 class Env {
     static final name = 'test';
     static final basePath = '/api';

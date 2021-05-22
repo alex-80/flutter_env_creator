@@ -1,0 +1,13 @@
+targets:
+  $default:
+    builders:
+      flutter_env_creator|mark_builder:
+        enabled: true
+
+builders:
+  mark_builder:
+    import: 'package:flutter_env_creator/builder.dart'
+    builder_factories: ['markBuilder']
+    build_extensions: { '.dart': ['.env.dart'] }
+    auto_apply: root_package
+    build_to: source
