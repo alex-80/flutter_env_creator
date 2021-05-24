@@ -32,10 +32,11 @@ Map<String, List<dynamic>> genDartSourceData(
     Map<dynamic, dynamic> map, String prefix) {
   var dartSourceData = <String, List<dynamic>>{'fields': [], 'classes': []};
 
-  void Function(dynamic value, {int level, String parentKey})
+  late void Function(dynamic value, {required int level, String? parentKey})
       initDartSourceData;
 
-  initDartSourceData = (dynamic mapOrList, {int level, String parentKey}) {
+  initDartSourceData =
+      (dynamic mapOrList, {required int level, String? parentKey}) {
     if (mapOrList is Map) {
       final classes = dartSourceData['classes'];
 
@@ -45,17 +46,17 @@ Map<String, List<dynamic>> genDartSourceData(
           final className = '$parentKey$upperKey';
 
           if (level == 0) {
-            dartSourceData['fields'].add({'key': key, 'val': '$className()'});
+            dartSourceData['fields']!.add({'key': key, 'val': '$className()'});
           } else {
             final index = level - 1;
-            if (index >= 0 && index < classes.length) {
+            if (index >= 0 && index < classes!.length) {
               final Map<String, dynamic> clazz = classes[index];
 
               (clazz['fields'] as List)
                   .add({'key': key, 'val': '$className()'});
             }
           }
-          classes.add({'name': className, 'fields': []});
+          classes!.add({'name': className, 'fields': []});
 
           initDartSourceData(value, level: level + 1, parentKey: className);
         } else {
@@ -64,9 +65,9 @@ Map<String, List<dynamic>> genDartSourceData(
             val = "'$val'";
           }
           if (level == 0) {
-            dartSourceData['fields'].add({'key': key, 'val': val});
+            dartSourceData['fields']!.add({'key': key, 'val': val});
           } else {
-            final index = classes.length - 1;
+            final index = classes!.length - 1;
             if (index >= 0 && index < classes.length) {
               final Map<String, dynamic> clazz = classes[index];
 
@@ -103,16 +104,16 @@ Map<String, List<dynamic>> genPropertySourceData(Map<dynamic, dynamic> map) {
   var propertySourceData = <String, List<dynamic>>{'fields': []};
   final fields = propertySourceData['fields'];
 
-  void Function(dynamic value, {String path}) initPropertySourceData;
+  late void Function(dynamic value, {String? path}) initPropertySourceData;
 
-  initPropertySourceData = (dynamic value, {String path}) {
+  initPropertySourceData = (dynamic value, {String? path}) {
     if (value is Map) {
       value.forEach((key, value) {
         final keyPath = path != null ? '$path.$key' : key;
         if (value is Map || value is List) {
           initPropertySourceData(value, path: keyPath);
         } else {
-          fields.add({'key': keyPath, 'val': value});
+          fields!.add({'key': keyPath, 'val': value});
         }
       });
     }

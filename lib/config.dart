@@ -3,5 +3,5 @@ class Config {
   final String envDir;
   final String env;
 
-  Config({this.envPrefix, this.envDir, this.env});
+  Config({required this.envPrefix, required this.envDir, required this.env});
 }
