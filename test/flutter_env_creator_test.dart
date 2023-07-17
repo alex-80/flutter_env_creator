@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:test/test.dart';
 import 'package:flutter_env_creator/extension.dart';
 import 'package:flutter_env_creator/flutter_env_creator.dart'

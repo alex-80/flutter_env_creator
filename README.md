@@ -58,7 +58,7 @@ baseUrl: /api-dev
 - Run the package:
 
 ```bash
-APP_ENV=dev flutter pub run build_runner build
+APP_ENV=dev dart run build_runner build
 ```
 
 ## Result

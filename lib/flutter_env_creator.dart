@@ -1,10 +1,10 @@
 import 'package:flutter_env_creator/config.dart';
 import 'package:flutter_env_creator/extension.dart';
-import 'package:mustache/mustache.dart';
+import 'package:mustache_template/mustache.dart';
 import 'package:yaml/yaml.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:merge_map/merge_map.dart';
+import 'package:belatuk_merge_map/belatuk_merge_map.dart';
 
 const String _dartTpl = '''
 class Env {
