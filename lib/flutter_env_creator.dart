@@ -1,10 +1,10 @@
 import 'package:flutter_env_creator/config.dart';
 import 'package:flutter_env_creator/extension.dart';
+import 'package:flutter_env_creator/merge_map.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:yaml/yaml.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:belatuk_merge_map/belatuk_merge_map.dart';
 
 const String _dartTpl = '''
 class Env {
@@ -32,33 +32,42 @@ Map<String, List<dynamic>> genDartSourceData(
     Map<dynamic, dynamic> map, String prefix) {
   var dartSourceData = <String, List<dynamic>>{'fields': [], 'classes': []};
 
-  late void Function(dynamic value, {required int level, String? parentKey})
-      initDartSourceData;
+  late void Function(dynamic value,
+      {required int level,
+      required List fields,
+      String? parentKey}) initDartSourceData;
 
-  initDartSourceData =
-      (dynamic mapOrList, {required int level, String? parentKey}) {
+  final classes = dartSourceData['classes'];
+
+  initDartSourceData = (dynamic mapOrList,
+      {required int level, required List fields, String? parentKey}) {
     if (mapOrList is Map) {
-      final classes = dartSourceData['classes'];
-
       mapOrList.forEach((key, value) {
         if (value is Map || value is List) {
           final upperKey = (key as String).toFirstUpperCase();
           final className = '$parentKey$upperKey';
 
-          if (level == 0) {
-            dartSourceData['fields']!.add({'key': key, 'val': '$className()'});
-          } else {
-            final index = level - 1;
-            if (index >= 0 && index < classes!.length) {
-              final Map<String, dynamic> clazz = classes[index];
+          // if (level == 0) {
+          //   dartSourceData['fields']!.add({'key': key, 'val': '$className()'});
+          // } else {
+          //   final index = level - 1;
+          //   if (index >= 0 && index < classes!.length) {
+          //     final Map<String, dynamic> clazz = classes[index];
 
-              (clazz['fields'] as List)
-                  .add({'key': key, 'val': '$className()'});
-            }
-          }
-          classes!.add({'name': className, 'fields': []});
+          //     (clazz['fields'] as List)
+          //         .add({'key': key, 'val': '$className()'});
+          //   }
+          // }
+          fields.add({'key': key, 'val': '$className()'});
+          final newFields = [];
+          classes!.add({'name': className, 'fields': newFields});
 
-          initDartSourceData(value, level: level + 1, parentKey: className);
+          initDartSourceData(
+            value,
+            level: level + 1,
+            fields: newFields,
+            parentKey: className,
+          );
         } else {
           var val = value;
           if (value is String) {
@@ -81,13 +90,18 @@ Map<String, List<dynamic>> genDartSourceData(
 
     if (mapOrList is List) {
       mapOrList.forEach((element) {
-        initDartSourceData(element, level: level + 1);
+        initDartSourceData(element, level: level + 1, fields: []);
       });
       return;
     }
   };
 
-  initDartSourceData(map, level: 0, parentKey: prefix);
+  initDartSourceData(
+    map,
+    level: 0,
+    fields: dartSourceData['fields']!,
+    parentKey: prefix,
+  );
 
   return dartSourceData;
 }

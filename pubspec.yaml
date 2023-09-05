@@ -9,7 +9,6 @@ environment:
 dependencies:
   yaml: ^3.1.0
   path: ^1.8.0
-  belatuk_merge_map: ^5.0.0
   mustache_template: ^2.0.0
   source_gen: ^1.0.0
 

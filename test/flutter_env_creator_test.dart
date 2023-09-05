@@ -16,6 +16,7 @@ void main() {
       expect(string.toFirstUpperCase(), equals('Name'));
     });
   });
+
   group('flutter_env_creator', () {
     final map = {
       'name': 'test',
@@ -92,6 +93,51 @@ logger.enable=true
 timeout=5000
             '''
               .trim()));
+    });
+
+    test('Nested reference type', () {
+      final result = flutter_env_creator.genDartSource({
+        'key4': {
+          'world': 'value4_2',
+          'foo': {
+            'bar': {
+              'bzz': {'b': 1}
+            }
+          }
+        },
+        'key7': {
+          'nested': {'b': 'value7_1_2'}
+        }
+      }, 'Env');
+      expect(
+        result.trim(),
+        equals('''
+class Env {
+    static final key4 = EnvKey4();
+    static final key7 = EnvKey7();
+}
+class EnvKey4 {
+    final world = 'value4_2';
+    final foo = EnvKey4Foo();
+}  
+class EnvKey4Foo {
+    final bar = EnvKey4FooBar();
+}  
+class EnvKey4FooBar {
+    final bzz = EnvKey4FooBarBzz();
+}  
+class EnvKey4FooBarBzz {
+    final b = 1;
+}  
+class EnvKey7 {
+    final nested = EnvKey7Nested();
+}  
+class EnvKey7Nested {
+    final b = 'value7_1_2';
+}
+          '''
+            .trim()),
+      );
     });
   });
 }
