@@ -42,22 +42,13 @@ Map<String, List<dynamic>> genDartSourceData(
   initDartSourceData = (dynamic mapOrList,
       {required int level, required List fields, String? parentKey}) {
     if (mapOrList is Map) {
-      mapOrList.forEach((key, value) {
+      for (final entry in mapOrList.entries) {
+        final key = entry.key;
+        final value = entry.value;
         if (value is Map || value is List) {
           final upperKey = (key as String).toFirstUpperCase();
           final className = '$parentKey$upperKey';
 
-          // if (level == 0) {
-          //   dartSourceData['fields']!.add({'key': key, 'val': '$className()'});
-          // } else {
-          //   final index = level - 1;
-          //   if (index >= 0 && index < classes!.length) {
-          //     final Map<String, dynamic> clazz = classes[index];
-
-          //     (clazz['fields'] as List)
-          //         .add({'key': key, 'val': '$className()'});
-          //   }
-          // }
           fields.add({'key': key, 'val': '$className()'});
           final newFields = [];
           classes!.add({'name': className, 'fields': newFields});
@@ -84,14 +75,14 @@ Map<String, List<dynamic>> genDartSourceData(
             }
           }
         }
-      });
+      }
       return;
     }
 
     if (mapOrList is List) {
-      mapOrList.forEach((element) {
+      for (final element in mapOrList) {
         initDartSourceData(element, level: level + 1, fields: []);
-      });
+      }
       return;
     }
   };
@@ -122,20 +113,22 @@ Map<String, List<dynamic>> genPropertySourceData(Map<dynamic, dynamic> map) {
 
   initPropertySourceData = (dynamic value, {String? path}) {
     if (value is Map) {
-      value.forEach((key, value) {
+      for (final entry in value.entries) {
+        final key = entry.key;
+        final val = entry.value;
         final keyPath = path != null ? '$path.$key' : key;
-        if (value is Map || value is List) {
-          initPropertySourceData(value, path: keyPath);
+        if (val is Map || val is List) {
+          initPropertySourceData(val, path: keyPath);
         } else {
-          fields!.add({'key': keyPath, 'val': value});
+          fields!.add({'key': keyPath, 'val': val});
         }
-      });
+      }
     }
 
     if (value is List) {
-      value.forEach((element) {
+      for (final element in value) {
         initPropertySourceData(element, path: path);
-      });
+      }
     }
   };
 
