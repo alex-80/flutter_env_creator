@@ -1,0 +1,6 @@
+# Files not relevant to package consumers
+AGENTS.md
+flutter_env_creator.iml
+.idea/
+.vscode/
+build/
