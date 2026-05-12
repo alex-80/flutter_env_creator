@@ -1,17 +1,19 @@
 name: flutter_env_creator
-description: Automatically generates dart code from your yaml file.
+description: A code generator that reads YAML environment files and produces typed Dart classes and Android properties files.
 version: 2.0.1
 repository: https://github.com/alex-80/flutter_env_creator
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '^3.6.0'
 
 dependencies:
   yaml: ^3.1.0
   path: ^1.8.0
   mustache_template: ^2.0.0
-  source_gen: ^1.0.0
+  source_gen: ^2.0.0
+  build: ^2.4.0
+  analyzer: ^7.3.0
 
 dev_dependencies:
-  pedantic: ^1.11.0
-  test: ^1.17.4
+  test: ^1.26.3
+  lints: ^4.0.0
