@@ -95,6 +95,30 @@ timeout=5000
               .trim()));
     });
 
+    test('Generate Property Source escapes non-ASCII characters', () {
+      final chineseMap = {
+        'name': '开发环境',
+        'baseUrl': '/api',
+        'timeout': 5000,
+      };
+      final result = flutter_env_creator.genPropertySource(chineseMap);
+      expect(
+          result.trim(),
+          equals('''
+# auto generate
+name=\\u5f00\\u53d1\\u73af\\u5883
+baseUrl=/api
+timeout=5000
+            '''
+              .trim()));
+    });
+
+    test('Generate Dart Source preserves non-ASCII characters as-is', () {
+      final chineseMap = {'name': '开发环境'};
+      final result = flutter_env_creator.genDartSource(chineseMap, 'Env');
+      expect(result, contains("'开发环境'"));
+    });
+
     test('Nested reference type', () {
       final result = flutter_env_creator.genDartSource({
         'key4': {

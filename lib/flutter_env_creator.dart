@@ -3,6 +3,7 @@ import 'package:flutter_env_creator/extension.dart';
 import 'package:flutter_env_creator/merge_map.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:yaml/yaml.dart';
+import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
@@ -105,6 +106,19 @@ String genDartSource(Map<dynamic, dynamic> map, String prefix) {
   return result;
 }
 
+// Escape non-ASCII characters in property values using Unicode escape sequences.
+String _escapePropertyValue(String value) {
+  final buffer = StringBuffer();
+  for (final rune in value.runes) {
+    if (rune > 127) {
+      buffer.write('\\u${rune.toRadixString(16).padLeft(4, '0')}');
+    } else {
+      buffer.writeCharCode(rune);
+    }
+  }
+  return buffer.toString();
+}
+
 Map<String, List<dynamic>> genPropertySourceData(Map<dynamic, dynamic> map) {
   var propertySourceData = <String, List<dynamic>>{'fields': []};
   final fields = propertySourceData['fields'];
@@ -120,7 +134,8 @@ Map<String, List<dynamic>> genPropertySourceData(Map<dynamic, dynamic> map) {
         if (val is Map || val is List) {
           initPropertySourceData(val, path: keyPath);
         } else {
-          fields!.add({'key': keyPath, 'val': val});
+          final escapedVal = val is String ? _escapePropertyValue(val) : val;
+          fields!.add({'key': keyPath, 'val': escapedVal});
         }
       }
     }
@@ -151,7 +166,7 @@ YamlMap _getYamlConfig(String yamlPath) {
     throw Exception('$yamlPath not exists');
   }
 
-  final content = file.readAsStringSync();
+  final content = file.readAsStringSync(encoding: utf8);
   final doc = loadYaml(content);
 
   return doc as YamlMap;
@@ -181,7 +196,7 @@ String generateEnv(Config config) {
     Directory(propertyOutputDir).createSync(recursive: true);
   }
 
-  File(propertyPath).writeAsString(propertyOutput);
+  File(propertyPath).writeAsStringSync(propertyOutput, encoding: utf8);
 
   return dartOutput;
 }
