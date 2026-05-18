@@ -1,6 +1,6 @@
 name: flutter_env_creator
 description: A code generator that reads YAML environment files and produces typed Dart classes and Android properties files.
-version: 2.0.1
+version: 2.0.2
 repository: https://github.com/alex-80/flutter_env_creator
 
 environment:

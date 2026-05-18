@@ -1,3 +1,7 @@
+## 2.0.2
+
+- Encode non-ASCII characters in .properties file as \uXXXX escapes
+
 ## 2.0.1
 
 - Fixed missing `build` and `analyzer` dependencies in `pubspec.yaml`
