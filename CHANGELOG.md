@@ -1,3 +1,9 @@
+## 3.0.0
+
+- Upgraded `source_gen` to `^4.0.0`
+- Widened `build` to `>=3.0.2 <5.0.0` and `analyzer` to `>=8.1.1 <15.0.0`
+- Raised minimum SDK to `^3.9.0`
+
 ## 2.0.2
 
 - Encode non-ASCII characters in .properties file as \uXXXX escapes

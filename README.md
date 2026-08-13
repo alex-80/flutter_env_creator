@@ -18,8 +18,8 @@ Add `flutter_env_creator` and `build_runner` as dev dependencies:
 
 ```yaml
 dev_dependencies:
-  flutter_env_creator: ^2.0.1
-  build_runner: ^2.0.0
+  flutter_env_creator: ^3.0.0
+  build_runner: ^2.16.0
 ```
 
 ```bash
